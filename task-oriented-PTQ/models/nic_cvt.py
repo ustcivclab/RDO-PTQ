@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from compressai.ans import BufferedRansEncoder, RansDecoder
 from compressai.entropy_models import EntropyBottleneck, GaussianConditional
 from compressai.layers import MaskedConv2d
-from timm.models.layers import trunc_normal_
 from .layers import RSTB
 from .utils import update_registered_buffers
 
@@ -279,6 +278,7 @@ class NIC(nn.Module):
 
     def _init_weights(self, m):
         if isinstance(m, nn.Linear):
+            from timm.models.layers import trunc_normal_
             trunc_normal_(m.weight, std=.02)
             if isinstance(m, nn.Linear) and m.bias is not None:
                 nn.init.constant_(m.bias, 0)

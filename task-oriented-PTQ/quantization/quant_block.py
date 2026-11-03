@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
-from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from compressai.entropy_models import EntropyBottleneck, GaussianConditional
 from compressai.layers.layers import ResidualBlockWithStride, ResidualBlockUpsample, ResidualBlock, subpel_conv3x3
 

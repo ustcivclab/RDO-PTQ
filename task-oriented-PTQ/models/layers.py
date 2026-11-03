@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as checkpoint
-from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 
 
 class PatchEmbed(nn.Module):
@@ -129,6 +128,7 @@ class WindowAttention(nn.Module):
 
         self.proj_drop = nn.Dropout(proj_drop)
 
+        from timm.models.layers import trunc_normal_
         trunc_normal_(self.relative_position_bias_table, std=.02)
         self.softmax = nn.Softmax(dim=-1)
 
@@ -218,6 +218,7 @@ class SwinTransformerBlock(nn.Module):
         assert 0 <= self.shift_size < self.window_size, "shift_size must in 0-window_size"
 
         self.norm1 = norm_layer(dim)
+        from timm.models.layers import DropPath, to_2tuple
         self.attn = WindowAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
             qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
