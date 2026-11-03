@@ -208,7 +208,7 @@ def layer_reconstruction(model: QuantModel, layer: QuantModule, layer_name: str 
     """
     
 
-    device = 'cuda'
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     cached_start = time.time()
     cached_inps, cached_outs = save_inp_oup_data(model, layer, cali_data, asym, act_quant, batch_size=1, input_prob=True)
     cached_time = time.time() - cached_start

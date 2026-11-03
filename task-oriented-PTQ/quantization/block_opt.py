@@ -208,7 +208,7 @@ def block_reconstruction(model: QuantModel, block: BaseQuantBlock, block_name: s
             args: main.py args
     """
 
-    device = 'cuda'
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
     cached_start = time.time()
     cached_inps, cached_outs = save_inp_oup_data(model, block, cali_data, asym, act_quant, batch_size=1, input_prob=True)
     cached_time = time.time() - cached_start
