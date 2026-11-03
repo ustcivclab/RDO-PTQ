@@ -1,7 +1,6 @@
 import io
 import os
 import copy
-import yaml
 import math
 import logging
 import numpy as np

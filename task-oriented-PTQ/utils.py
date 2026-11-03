@@ -1,6 +1,5 @@
 import os
 import sys
-import yaml
 import time
 import struct
 import shutil
@@ -17,8 +16,16 @@ from torchvision.transforms import ToPILImage, ToTensor
 
 
 def get_config(config_path):
+    ext = os.path.splitext(config_path)[-1].lower()
     with open(config_path, 'r') as stream:
-        config = yaml.load(stream, Loader=yaml.FullLoader)
+        if ext == '.json':
+            import json
+            config = json.load(stream)
+        elif ext == '.yaml':
+            import yaml
+            config = yaml.load(stream, Loader=yaml.FullLoader)
+        else:
+            raise NotImplementedError(f'Unsupported config file format: {ext}')
         return config
 
 
