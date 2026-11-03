@@ -31,7 +31,7 @@ def parse_args(argv):
     parser.add_argument('--batch_size', default=4, type=int, help='mini-batch size for data loader')
     parser.add_argument('--name', default=datetime.now().strftime('%Y-%m-%d_%H_%M_%S'), type=str, help='result dir name')
     parser.add_argument('--arch', default='Lu2022', type=str, help='model name', 
-                        choices=['Lu2022', 'Cheng2020', ])
+                        choices=['Lu2022', 'Cheng2020', 'Cheng2020_attn' ])
     parser.add_argument('--type', default='mse', type=str, help='model loss type', choices=['mse','ms-ssim',])
     parser.add_argument('--lmbda', default=0.0483, type=float, 
                         help='the lmbda related to quality, 0.0018, 0.0035, 0.0067, 0.0130, 0.0250, 0.0483')
@@ -155,9 +155,14 @@ def optimize_model(args, config, output_dir, log_dir):
     is_cheng = False
     if 'Lu2022' in args.arch:
         model = nic_tic(args.quality, args.type, pretrained=True)
+    elif 'Cheng2020_attn' in args.arch:
+        is_cheng = True
+        from compressai.zoo import cheng2020_attn
+        model = cheng2020_attn(args.quality, args.type, pretrained=True)
     elif 'Cheng2020' in args.arch:
         is_cheng = True
-        model = torch.load('./ckpts/Cheng2020/{}/cheng2020_{}_{}.pth'.format(args.type, args.type, args.quality))
+        from compressai.zoo import cheng2020_anchor
+        model = cheng2020_anchor(args.quality, args.type, pretrained=True)
     elif 'Minnen2018' in args.arch:
         model = torch.load('./ckpts/Minnen2018/{}/minnen2018_{}_{}.pth'.format(args.type, args.type, args.quality))
     else:
@@ -257,7 +262,7 @@ def optimize_model(args, config, output_dir, log_dir):
     qnn.set_quant_state(weight_quant=True, act_quant=args.act_quant)
     if 'Lu2022' in args.arch:
         qnn.model.g_s7.set_quant_state(True, False)
-    elif 'Cheng2020' in args.arch:
+    elif 'Cheng2020' in args.arch or 'Cheng2020_attn' in args.arch:
         qnn.model.g_s[-1][0].set_quant_state(True, False)
     else:
         qnn.model.g_s[-1].set_quant_state(True, False)
@@ -272,7 +277,7 @@ def optimize_model(args, config, output_dir, log_dir):
     qnn.set_quant_state(weight_quant=True, act_quant=True)
     if 'Lu2022' in args.arch:
         qnn.model.g_s7.set_quant_state(True, False)
-    elif 'Cheng2020' in args.arch:
+    elif 'Cheng2020' in args.arch or 'Cheng2020_attn' in args.arch:
         qnn.model.g_s[-1][0].set_quant_state(True, False)
     else:
         qnn.model.g_s[-1].set_quant_state(True, False)
