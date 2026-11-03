@@ -75,7 +75,7 @@ def crop(x, size):
 
 def Test_kodak(model=None):
     
-    testset_path = './datasets/kodak24'
+    testset_path = os.path.join(os.path.dirname(__file__), "datasets", "kodak24")
     device = next(model.parameters()).device
 
     psnr_sum = 0.0
