@@ -11,7 +11,6 @@ from pathlib import Path
 
 import torch
 import torch.nn.functional as F
-from torch.utils.tensorboard import SummaryWriter
 from torchvision.transforms import ToPILImage, ToTensor
 
 
@@ -110,7 +109,10 @@ class Logger:
             self._init_summary_writers()
 
     def _init_summary_writers(self):
-        self.writer = SummaryWriter(self.log_dir)
+        from contextlib import suppress
+        with suppress(ImportError):
+            from torch.utils.tensorboard import SummaryWriter
+            self.writer = SummaryWriter(self.log_dir)
 
     def init(self):
         self.loss = AverageMeter('Loss', ':6.3f')
